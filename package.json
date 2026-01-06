@@ -3,10 +3,11 @@
   "version": "21.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky",
-    "lint:all": "npx nx run ngx-material-intl-tel-input:lint && npx nx run ngx-material-intl-tel-input-lib:lint",
-    "unit-tests:all": "npx nx run ngx-material-intl-tel-input:test && npx nx run ngx-material-intl-tel-input-lib:test",
-    "build:all": "npx nx run ngx-material-intl-tel-input:build && npx nx run ngx-material-intl-tel-input-lib:build"
+    "pnpm-install": "pnpm install --no-frozen-lockfile",
+    "pnpm-auto-update": "pnpm update",
+    "pnpm-approve-builds-scripts": "pnpm approve-builds",
+    "nxupdate": "nx migrate latest",
+    "nxmigrate": "nx migrate --run-migrations"
   },
   "private": true,
   "dependencies": {
