@@ -14,7 +14,8 @@
       [matTooltip]="prefix()?.name || ''"
     >
       <mat-select
-        [field]="telForm.prefixCtrl"
+        [(ngModel)]="selectedCountry"
+        (ngModelChange)="onCountryChange($event)"
         [placeholder]="(!isLoading() && textLabels().codePlaceholder) || ''"
         #singleSelect
         panelClass="tel-mat-select-panel"
@@ -45,7 +46,8 @@
         @if (enableSearch()) {
           <mat-option>
             <ngx-mat-select-search
-              [formControl]="prefixFilterCtrl"
+              [ngModel]="searchFilter()"
+              (ngModelChange)="onSearchChange($event)"
               [placeholderLabel]="textLabels().searchPlaceholderLabel || ''"
               [noEntriesFoundLabel]="textLabels().noEntriesFoundLabel || ''"
             >
@@ -70,7 +72,7 @@
           </mat-option>
         }
 
-        @for (country of filteredCountries | async; track $index) {
+        @for (country of filteredCountries(); track $index) {
           <mat-option [value]="country">
             <div
               class="country-option"
@@ -102,7 +104,8 @@
       <input
         matInput
         type="tel"
-        [field]="telForm.numberControl"
+        [(ngModel)]="inputNumber"
+        (ngModelChange)="onNumberChange($event)"
         [placeholder]="prefix()?.placeHolder || ''"
         autocomplete="off"
         (focus)="onInputFocus()"
@@ -117,8 +120,8 @@
 
       @if (!hidePhoneIcon()) {
         <mat-icon matSuffix>
-          @if (iconMakeCall() && fieldControl()?.valid && fieldControl()?.value) {
-            <a href="tel:{{ fieldControl()?.value }}">
+          @if (iconMakeCall() && isNumberValid() && formattedValue()) {
+            <a href="tel:{{ formattedValue() }}">
               <ngx-material-intl-tel-input-phone-icon></ngx-material-intl-tel-input-phone-icon>
             </a>
           } @else {
