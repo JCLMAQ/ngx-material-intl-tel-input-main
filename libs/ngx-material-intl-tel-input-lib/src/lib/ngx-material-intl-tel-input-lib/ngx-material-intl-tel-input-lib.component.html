@@ -81,51 +81,54 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field [appearance]="appearance()" class="number-form-field">
+    <div class="number-form-field">
       @if (textLabels().nationalNumberLabel) {
-        <mat-label>{{ textLabels().nationalNumberLabel }}</mat-label>
+        <label class="number-label">{{ textLabels().nationalNumberLabel }}</label>
       }
-      <input
-        matInput
-        type="tel"
-        [value]="inputNumber()"
-        (input)="onNumberChange($event.target.value)"
-        [placeholder]="prefix()?.placeHolder || ''"
-        autocomplete="off"
-        (focus)="onInputFocus()"
-        (blur)="onInputBlur()"
-        [required]="required()"
-        [attr.maxlength]="
-          enableInputMaxLength() ? getMaxInputLength(prefix()?.iso2) : null
-        "
-        #numberInput
-        [imask]="prefix()?.mask"
-      />
-
-      @if (!hidePhoneIcon()) {
-        <mat-icon matSuffix>
-          @if (iconMakeCall() && isNumberValid() && formattedValue()) {
-            <a href="tel:{{ formattedValue() }}">
+      <div class="input-wrapper">
+        <input
+          type="tel"
+          [value]="inputNumber()"
+          (input)="onNumberChange($event.target.value)"
+          [placeholder]="prefix()?.placeHolder || ''"
+          autocomplete="off"
+          (focus)="onInputFocus()"
+          (blur)="onInputBlur()"
+          [required]="required()"
+          [attr.maxlength]="
+            enableInputMaxLength() ? getMaxInputLength(prefix()?.iso2) : null
+          "
+          #numberInput
+          [imask]="prefix()?.mask"
+          class="tel-input"
+          [class.is-invalid]="hasError('invalidNumber') || hasError('numberTooLong')"
+          [class.is-required-error]="hasError('required')"
+        />
+        @if (!hidePhoneIcon()) {
+          <span class="phone-icon-wrapper">
+            @if (iconMakeCall() && isNumberValid() && formattedValue()) {
+              <a href="tel:{{ formattedValue() }}" class="phone-icon-link">
+                <ngx-material-intl-tel-input-phone-icon></ngx-material-intl-tel-input-phone-icon>
+              </a>
+            } @else {
               <ngx-material-intl-tel-input-phone-icon></ngx-material-intl-tel-input-phone-icon>
-            </a>
-          } @else {
-            <ngx-material-intl-tel-input-phone-icon></ngx-material-intl-tel-input-phone-icon>
-          }
-        </mat-icon>
+            }
+          </span>
+        }
+      </div>
+      @if (hasError('required') && textLabels().requiredError) {
+        <div class="error-message">{{ textLabels().requiredError }}</div>
       }
-    </mat-form-field>
+      @if (hasError('invalidNumber') && textLabels().invalidNumberError) {
+        <div class="error-message">{{ textLabels().invalidNumberError }}</div>
+      }
+      @if (hasError('numberTooLong') && textLabels().numberTooLongError) {
+        <div class="error-message">{{ textLabels().numberTooLongError }}</div>
+      }
+    </div>
   </div>
 
   @if (textLabels().hintLabel) {
-    <mat-hint>{{ textLabels().hintLabel }}</mat-hint>
-  }
-  @if (hasError('required') && textLabels().requiredError) {
-    <mat-error>{{ textLabels().requiredError }}</mat-error>
-  }
-  @if (hasError('invalidNumber') && textLabels().invalidNumberError) {
-    <mat-error>{{ textLabels().invalidNumberError }}</mat-error>
-  }
-  @if (hasError('numberTooLong') && textLabels().numberTooLongError) {
-    <mat-error>{{ textLabels().numberTooLongError }}</mat-error>
+    <div class="hint-label">{{ textLabels().hintLabel }}</div>
   }
 </section>

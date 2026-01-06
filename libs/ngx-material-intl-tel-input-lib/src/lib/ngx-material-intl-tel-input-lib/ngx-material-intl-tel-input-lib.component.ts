@@ -22,11 +22,9 @@ import {
   validate
 } from '@angular/forms/signals';
 import {
-  MatFormFieldAppearance,
-  MatFormFieldModule
+  MatFormFieldAppearance
 } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import {
   MAT_SELECT_CONFIG,
   MatSelect,
@@ -75,8 +73,6 @@ interface PhoneValidationResult {
     FormsModule,
     MatSelectModule,
     Field,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
     MatTooltipModule,
     PhoneIconComponent,
