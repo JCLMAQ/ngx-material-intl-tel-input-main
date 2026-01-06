@@ -14,8 +14,8 @@
       [matTooltip]="prefix()?.name || ''"
     >
       <mat-select
-        [(ngModel)]="selectedCountry"
-        (ngModelChange)="onCountryChange($event)"
+        [value]="selectedCountry()"
+        (selectionChange)="onCountryChange($event.value)"
         [placeholder]="(!isLoading() && textLabels().codePlaceholder) || ''"
         #singleSelect
         panelClass="tel-mat-select-panel"
@@ -104,8 +104,8 @@
       <input
         matInput
         type="tel"
-        [(ngModel)]="inputNumber"
-        (ngModelChange)="onNumberChange($event)"
+        [value]="inputNumber()"
+        (input)="onNumberChange($event.target.value)"
         [placeholder]="prefix()?.placeHolder || ''"
         autocomplete="off"
         (focus)="onInputFocus()"

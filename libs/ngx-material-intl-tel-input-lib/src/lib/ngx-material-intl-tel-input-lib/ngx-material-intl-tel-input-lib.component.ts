@@ -251,7 +251,8 @@ export class NgxMaterialIntlTelInputComponent
     }));
   }
 
-  onNumberChange(number: string): void {
+  onNumberChange(value: string | Event): void {
+    const number = typeof value === 'string' ? value : (value.target as HTMLInputElement).value;
     this.inputNumber.set(number);
     this.telState.update((state) => ({
       ...state,
