@@ -112,7 +112,7 @@ export class NgxMaterialIntlTelInputComponent
   private readonly countryCodeData = inject(CountryCode);
   private readonly geoIpService = inject(GeoIpService);
   private readonly countryDataService = inject(CountryDataService);
-  private readonly controlContainer = inject(ControlContainer);
+  private readonly controlContainer = inject(ControlContainer, { optional: true });
 
   fieldControl = model<
     AbstractControl<string | null, string | null> | FormControl | null
