@@ -40,7 +40,6 @@ import {
   PhoneNumberType,
   PhoneNumberUtil
 } from 'google-libphonenumber';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PhoneIconComponent } from '../components/phone-icon/phone-icon.component';
 import { CountryCode } from '../data/country-code';
 import { CountryISO } from '../enums/country-iso.enum';
@@ -75,7 +74,6 @@ interface PhoneValidationResult {
   imports: [
     FormsModule,
     MatSelectModule,
-    NgxMatSelectSearchModule,
     Field,
     MatFormFieldModule,
     MatInputModule,
