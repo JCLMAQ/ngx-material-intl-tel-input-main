@@ -1,0 +1,32 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@use './m3-theme';
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+:root {
+  @include mat.all-component-themes(m3-theme.$light-theme);
+
+  & {
+    --mat-theme-primary: #209ffc;
+    --mat-theme-secondary: #023871;
+    --mat-theme-error: #f44336;
+    --mat-typography-font-family: Roboto, 'Helvetica Neue', sans-serif;
+    --mat-theme-primary-rgb: 32, 159, 252;
+    --mat-option-selected-state-label-text-color: #209ffc;
+    --mat-select-focused-arrow-color: #209ffc;
+    --mat-form-field-outlined-focus-outline-color: #209ffc;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+}

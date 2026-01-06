@@ -1,0 +1,81 @@
+{
+  "projectName": "ngx-material-intl-tel-input",
+  "projectOwner": "juanjotorres90",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "juanjotorres90",
+      "name": "Juanjo Torres",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/49198908?v=4",
+      "profile": "https://github.com/juanjotorres90",
+      "contributions": [
+        "design",
+        "code",
+        "doc",
+        "ideas",
+        "question",
+        "infra",
+        "example",
+        "maintenance",
+        "review",
+        "test"
+      ]
+    },
+    {
+      "login": "whegar",
+      "name": "Rafa Hernández",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5524772?v=4",
+      "profile": "https://github.com/whegar",
+      "contributions": ["ideas", "question", "infra", "maintenance", "review"]
+    },
+    {
+      "login": "ghollingworthh",
+      "name": "Glen Hollingworth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26550815?v=4?s=100",
+      "profile": "https://github.com/ghollingworthh",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "question",
+        "infra",
+        "maintenance",
+        "review"
+      ]
+    },
+    {
+      "login": "EphraimHaber",
+      "name": "EphraimHaber",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61934858?v=4?s=100",
+      "profile": "https://github.com/EphraimHaber",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "question",
+        "maintenance",
+        "review"
+      ]
+    },
+    {
+      "login": "Kamma31",
+      "name": "Rant",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50776388?v=4?s=100",
+      "profile": "https://github.com/Kamma31",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "question",
+        "maintenance",
+        "review"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true
+}
