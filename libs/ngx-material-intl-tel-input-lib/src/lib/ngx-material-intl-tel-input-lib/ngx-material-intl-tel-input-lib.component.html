@@ -6,16 +6,15 @@
   }
   <div
     class="tel-form"
-    [formGroup]="telForm"
-    [ngClass]="{ 'is-focused': isFocused() && appearance() !== 'outline' }"
+    [class.is-focused]="isFocused() && appearance() !== 'outline'"
   >
     <mat-form-field
       [appearance]="appearance()"
       class="prefix-form-field"
-      matTooltip="{{ prefixCtrl.value?.name }}"
+      [matTooltip]="prefix()?.name || ''"
     >
       <mat-select
-        formControlName="prefixCtrl"
+        [field]="telForm.prefixCtrl"
         [placeholder]="(!isLoading() && textLabels().codePlaceholder) || ''"
         #singleSelect
         panelClass="tel-mat-select-panel"
@@ -26,21 +25,19 @@
             <div class="country-option-flag-container">
               @if (emojiFlags()) {
                 <div>
-                  <span class="flag-emoji">{{
-                    prefixCtrl.value?.emojiFlag
-                  }}</span>
+                  <span class="flag-emoji">{{ prefix()?.emojiFlag }}</span>
                 </div>
               } @else {
                 <div
                   class="country-option-flag"
-                  [ngClass]="prefixCtrl.value?.flagClass"
+                  [class]="getFlagClass(prefix()?.flagClass)"
                 ></div>
               }
             </div>
-            @if (includeDialCode() || prefixCtrl.value?.iso2 === 'mp') {
-              <div>{{ prefixCtrl.value?.iso2?.toUpperCase() || '' }}</div>
+            @if (includeDialCode() || prefix()?.iso2 === 'mp') {
+              <div>{{ prefix()?.iso2?.toUpperCase() || '' }}</div>
             } @else {
-              <div>+{{ prefixCtrl.value?.dialCode || '' }}</div>
+              <div>+{{ prefix()?.dialCode || '' }}</div>
             }
           </div>
         </mat-select-trigger>
@@ -87,7 +84,7 @@
                 } @else {
                   <div
                     class="country-option-flag"
-                    [ngClass]="country.flagClass"
+                    [class]="getFlagClass(country.flagClass)"
                   ></div>
                 }
               </div>
@@ -105,26 +102,22 @@
       <input
         matInput
         type="tel"
-        formControlName="numberControl"
-        [placeholder]="prefixCtrl.value?.placeHolder || ''"
+        [field]="telForm.numberControl"
+        [placeholder]="prefix()?.placeHolder || ''"
         autocomplete="off"
         (focus)="onInputFocus()"
         (blur)="onInputBlur()"
         [required]="required()"
         [attr.maxlength]="
-          enableInputMaxLength()
-            ? getMaxInputLength(prefixCtrl.value?.iso2)
-            : null
+          enableInputMaxLength() ? getMaxInputLength(prefix()?.iso2) : null
         "
         #numberInput
-        [imask]="prefixCtrl.value?.mask"
+        [imask]="prefix()?.mask"
       />
 
       @if (!hidePhoneIcon()) {
         <mat-icon matSuffix>
-          @if (
-            iconMakeCall() && fieldControl()?.valid && fieldControl()?.value
-          ) {
+          @if (iconMakeCall() && fieldControl()?.valid && fieldControl()?.value) {
             <a href="tel:{{ fieldControl()?.value }}">
               <ngx-material-intl-tel-input-phone-icon></ngx-material-intl-tel-input-phone-icon>
             </a>
@@ -139,21 +132,13 @@
   @if (textLabels().hintLabel) {
     <mat-hint>{{ textLabels().hintLabel }}</mat-hint>
   }
-  @if (
-    fieldControl()?.hasError('required') &&
-    textLabels().requiredError &&
-    fieldControl()?.dirty
-  ) {
+  @if (hasError('required') && textLabels().requiredError) {
     <mat-error>{{ textLabels().requiredError }}</mat-error>
   }
-  @if (
-    fieldControl()?.hasError('invalidNumber') && textLabels().invalidNumberError
-  ) {
+  @if (hasError('invalidNumber') && textLabels().invalidNumberError) {
     <mat-error>{{ textLabels().invalidNumberError }}</mat-error>
   }
-  @if (
-    fieldControl()?.hasError('numberTooLong') && textLabels().numberTooLongError
-  ) {
+  @if (hasError('numberTooLong') && textLabels().numberTooLongError) {
     <mat-error>{{ textLabels().numberTooLongError }}</mat-error>
   }
 </section>
