@@ -1,10 +1,10 @@
 <section>
-  <form [formGroup]="formTestGroup" (ngSubmit)="onSubmit()">
+  <form (ngSubmit)="onSubmit()">
     <ngx-material-intl-tel-input
       (currentValue)="getValue($event)"
       (currentCountryCode)="getCountryCode($event)"
       (currentCountryISO)="getCountryISO($event)"
-      fieldControlName="phone"
+      [field]="formTestGroup.phone"
       [emojiFlags]="false"
       [includeDialCode]="false"
       [useMask]="false"
@@ -14,7 +14,7 @@
       [outputNumberFormat]="PhoneNumberFormat.INTERNATIONAL"
       [appearance]="'fill'"
     ></ngx-material-intl-tel-input>
-    <button mat-flat-button type="submit" [disabled]="!formTestGroup.valid">
+    <button mat-flat-button type="submit" [disabled]="!formTestGroup().valid()">
       Submit
     </button>
     <button mat-flat-button (click)="resetForm()" type="button">Reset</button>
@@ -25,7 +25,7 @@
     @if (showSetPhoneInput()) {
       <mat-form-field>
         <mat-label>Set phone number</mat-label>
-        <input matInput type="text" formControlName="setPhoneTextbox" />
+        <input matInput type="text" [field]="formTestGroup.setPhoneTextbox" />
       </mat-form-field>
       <button mat-flat-button (click)="setPhone()" type="button">
         Set phone number

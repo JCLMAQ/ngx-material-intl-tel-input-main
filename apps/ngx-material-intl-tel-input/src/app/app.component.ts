@@ -1,15 +1,9 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal
+    ChangeDetectionStrategy,
+    Component,
+    signal
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { Field, form, required, schema } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -19,11 +13,20 @@ import { RouterModule } from '@angular/router';
 import { PhoneNumberFormat } from 'google-libphonenumber';
 import { NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
 
+interface FormModel {
+  phone: string;
+  setPhoneTextbox: string;
+}
+
+const formSchema = schema<FormModel>((f) => {
+  required(f.phone, { message: 'Phone number is required' });
+});
+
 @Component({
   imports: [
     NgxMaterialIntlTelInputComponent,
     RouterModule,
-    ReactiveFormsModule,
+    Field,
     MatButtonModule,
     MatChipsModule,
     MatFormFieldModule,
@@ -36,22 +39,20 @@ import { NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  private readonly fb = inject(FormBuilder);
   title = 'ngx-material-intl-tel-input';
   currentPhoneValue = signal<string>('');
   currentCountryCode = signal<string>('');
   currentCountryISO = signal<string>('');
   submittedPhoneValue = signal<string>('');
-  formTestGroup: FormGroup;
   showSetPhoneInput = signal<boolean>(false);
   PhoneNumberFormat = PhoneNumberFormat;
 
-  constructor() {
-    this.formTestGroup = this.fb.group({
-      phone: ['', [Validators.required]],
-      setPhoneTextbox: ['']
-    });
-  }
+  private formData = signal<FormModel>({
+    phone: '',
+    setPhoneTextbox: ''
+  });
+
+  formTestGroup = form(this.formData, formSchema);
 
   /**
    * Sets the current phone value to the provided value.
@@ -63,19 +64,22 @@ export class AppComponent {
   }
 
   /**
-   * Submits the form data by setting the submitted phone value to the current phone value from the form group.
+   * Submits the form data by setting the submitted phone value to the current phone value.
    */
   onSubmit(): void {
-    this.submittedPhoneValue.set(this.formTestGroup.value['phone']);
+    if (this.formTestGroup().valid()) {
+      this.submittedPhoneValue.set(this.formData().phone);
+    }
   }
 
   /**
-   * Sets the phone control value to the value entered in the 'setPhoneTextbox' control.
+   * Sets the phone value to the value entered in the 'setPhoneTextbox' field.
    */
   setPhone(): void {
-    this.formTestGroup.controls['phone'].setValue(
-      this.formTestGroup.value['setPhoneTextbox']
-    );
+    this.formData.update((data) => ({
+      ...data,
+      phone: data.setPhoneTextbox
+    }));
   }
 
   /**
@@ -104,9 +108,13 @@ export class AppComponent {
   }
 
   /**
-   * Resets the form group to its initial state, clearing all form controls.
+   * Resets the form to its initial state and clears all values.
    */
   resetForm(): void {
-    this.formTestGroup.reset();
+    this.formData.set({
+      phone: '',
+      setPhoneTextbox: ''
+    });
+    this.formTestGroup().reset();
   }
 }

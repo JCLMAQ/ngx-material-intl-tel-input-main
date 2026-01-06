@@ -3,6 +3,10 @@
   "version": "21.0.0",
   "license": "MIT",
   "scripts": {
+    "start": "nx serve ngx-material-intl-tel-input",
+    "build": "nx build ngx-material-intl-tel-input",
+    "test": "nx test ngx-material-intl-tel-input",
+    "lint": "nx lint ngx-material-intl-tel-input",
     "pnpm-install": "pnpm install --no-frozen-lockfile",
     "pnpm-auto-update": "pnpm update",
     "pnpm-approve-builds-scripts": "pnpm approve-builds",
