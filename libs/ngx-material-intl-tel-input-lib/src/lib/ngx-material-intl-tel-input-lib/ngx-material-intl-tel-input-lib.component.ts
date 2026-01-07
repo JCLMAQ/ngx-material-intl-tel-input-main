@@ -2,28 +2,22 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  OnInit,
   computed,
   effect,
+  ElementRef,
   inject,
   input,
   model,
+  OnInit,
   output,
   signal,
-  viewChild
+  viewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import {
-  Field,
   customError,
-  form,
-  schema,
-  validate
+  form, schema, validate
 } from '@angular/forms/signals';
-import {
-  MatFormFieldAppearance
-} from '@angular/material/form-field';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import {
   MAT_SELECT_CONFIG,
@@ -70,9 +64,7 @@ interface PhoneValidationResult {
   templateUrl: './ngx-material-intl-tel-input-lib.component.html',
   styleUrl: './ngx-material-intl-tel-input-lib.component.scss',
   imports: [
-    FormsModule,
     MatSelectModule,
-    Field,
     MatIconModule,
     MatTooltipModule,
     PhoneIconComponent,
@@ -89,9 +81,7 @@ interface PhoneValidationResult {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgxMaterialIntlTelInputComponent
-  implements OnInit, AfterViewInit
-{
+export class NgxMaterialIntlTelInputComponent implements OnInit, AfterViewInit {
   private readonly countryCodeData = inject(CountryCode);
   private readonly geoIpService = inject(GeoIpService);
   private readonly countryDataService = inject(CountryDataService);
@@ -138,37 +128,35 @@ export class NgxMaterialIntlTelInputComponent
   currentCountryISO = output<string>();
   isFocused = signal(false);
   isLoading = signal(true);
-  formattedValue = signal('');
   searchFilter = signal<string>('');
 
-  // Signal 'value' requis pour être compatible avec [field] de signals-forms
-  value = model<string>('');
-
-  // Signals pour le two-way binding avec les contrôles
-  selectedCountry = model<Country | null>(null);
-  inputNumber = model<string>('');
-
-  private readonly telState = signal<TelFormState>({
-    prefixCtrl: null,
-    numberControl: ''
-  });
-
+  // Signal forms: état du formulaire
   allCountries: Country[] = [];
   phoneNumberUtil = PhoneNumberUtil.getInstance();
   singleSelect = viewChild<MatSelect>('singleSelect');
   numberInput = viewChild<ElementRef<HTMLInputElement>>('numberInput');
 
-  private readonly telSchema = schema<TelFormState>((f) => {
+  // Signal form state
+  telState = signal<TelFormState>({
+    prefixCtrl: null,
+    numberControl: ''
+  });
+
+  // Signal forms schema
+  telSchema = schema<TelFormState>((f) => {
     validate(f.numberControl, (field) => {
       const numberValue = field.value() || '';
-      // Accéder à prefixCtrl via le state signal
       const prefixValue = this.telState().prefixCtrl || null;
       return this.resolveValidation(numberValue, prefixValue);
     });
   });
 
   telForm = form(this.telState, this.telSchema);
+
+  // Derived signals
   prefix = computed(() => this.telState().prefixCtrl);
+  inputNumber = computed(() => this.telState().numberControl);
+  selectedCountry = computed(() => this.telState().prefixCtrl);
   isNumberValid = computed(() => {
     const state = this.telState();
     const validation = this.validatePhone(state);
@@ -185,26 +173,12 @@ export class NgxMaterialIntlTelInputComponent
     );
   });
 
+  // Signal pour la valeur formatée
+  formattedValue = signal('');
+
   constructor() {
     effect(() => this.applyPrefixDialCode());
     effect(() => this.syncWithTelState());
-
-    // Synchroniser le signal value avec le formulaire interne
-    // Lorsque value change (par signals-forms), mettre à jour l'état interne
-    effect(() => {
-      const val = this.value();
-      // Éviter les boucles infinies en vérifiant que c'est un vrai changement externe
-      if (val !== this.formattedValue()) {
-        this.applyExternalValue(val);
-      }
-    });
-
-    // Synchroniser l'état interne avec les modèles deux-way binding
-    effect(() => {
-      const state = this.telState();
-      this.selectedCountry.set(state.prefixCtrl);
-      this.inputNumber.set(state.numberControl);
-    });
   }
 
   ngOnInit(): void {
@@ -238,7 +212,6 @@ export class NgxMaterialIntlTelInputComponent
   }
 
   onCountryChange(country: Country | null): void {
-    this.selectedCountry.set(country);
     this.telState.update((state) => ({
       ...state,
       prefixCtrl: country
@@ -247,7 +220,6 @@ export class NgxMaterialIntlTelInputComponent
 
   onNumberChange(value: string | Event): void {
     const number = typeof value === 'string' ? value : (value.target as HTMLInputElement).value;
-    this.inputNumber.set(number);
     this.telState.update((state) => ({
       ...state,
       numberControl: number
@@ -355,9 +327,6 @@ export class NgxMaterialIntlTelInputComponent
     const validation = this.validatePhone(state);
     this.syncPrefixFromValidation(validation.country);
     this.formattedValue.set(validation.formatted);
-
-    // Mettre à jour le signal value pour signals-forms
-    this.value.set(validation.formatted);
 
     if (inputElement && validation.parsed) {
       this.setCursorPosition(
@@ -784,3 +753,4 @@ export class NgxMaterialIntlTelInputComponent
       .filter((char) => char === ' ').length;
   }
 }
+

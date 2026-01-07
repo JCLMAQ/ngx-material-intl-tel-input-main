@@ -9,7 +9,7 @@
 
     .main-label {
       padding: 2px 0;
-      font-size: 14px;
+      font-size: 10px;
     }
 
     .tel-form:has(.mat-form-field-appearance-fill) {
@@ -179,7 +179,7 @@
           .country-option {
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: 10px;
             .flag-emoji {
               font-size: 22px;
               vertical-align: middle;
@@ -281,7 +281,7 @@
       border: none;
       outline: none;
       background: transparent;
-      font-size: 16px;
+      font-size: 12px;
       font-family: inherit;
       color: var(--mat-theme-on-surface, #1f1f1f);
 
@@ -326,8 +326,8 @@
     }
   }
 
-  .hint-label {
-    font-size: 12px;
+  section .hint-label, :host .hint-label {
+    font-size: 10px !important;
     color: var(--mat-theme-on-surface-variant, #79747e);
     margin-top: 4px;
   }
@@ -337,7 +337,7 @@
     padding: 8px 12px;
     border: 1px solid var(--mat-theme-outline, #d8d8d8);
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 12px;
 
     &::placeholder {
       color: var(--mat-theme-on-surface-variant, #79747e);

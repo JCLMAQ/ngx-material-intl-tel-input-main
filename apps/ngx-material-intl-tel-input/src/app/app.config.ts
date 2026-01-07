@@ -8,7 +8,6 @@ import {
   LOCALE_ID,
   provideZonelessChangeDetection
 } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import {
   COUNTRY_NAME_OVERRIDES,
@@ -24,7 +23,7 @@ const englishCountryOverrides: CountryNameOverrides = {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(appRoutes),
-    provideAnimations(),
+    // provideAnimations(),
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     provideZonelessChangeDetection(),
     { provide: LOCALE_ID, useValue: 'fr-FR' },
