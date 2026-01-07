@@ -1,15 +1,17 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
+  effect,
   signal
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
-  FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { form, required, schema } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -36,20 +38,55 @@ import { NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  private readonly fb = inject(FormBuilder);
   title = 'ngx-material-intl-tel-input';
   currentPhoneValue = signal<string>('');
   currentCountryCode = signal<string>('');
   currentCountryISO = signal<string>('');
   submittedPhoneValue = signal<string>('');
-  formTestGroup: FormGroup;
   showSetPhoneInput = signal<boolean>(false);
   PhoneNumberFormat = PhoneNumberFormat;
+  private readonly phoneControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.required]
+  });
+
+  private readonly setPhoneTextboxControl = new FormControl<string>('', {
+    nonNullable: true
+  });
+  private readonly formState = signal<DemoFormState>({
+    phone: '',
+    setPhoneTextbox: ''
+  });
+  private readonly phoneValueSignal = toSignal(
+    this.phoneControl.valueChanges,
+    { initialValue: this.phoneControl.value }
+  );
+  private readonly setPhoneValueSignal = toSignal(
+    this.setPhoneTextboxControl.valueChanges,
+    { initialValue: this.setPhoneTextboxControl.value }
+  );
+  readonly phoneForm = form(this.formState, demoFormSchema);
+  readonly formTestGroup: FormGroup<{
+    phone: FormControl<string>;
+    setPhoneTextbox: FormControl<string>;
+  }> = new FormGroup({
+    phone: this.phoneControl,
+    setPhoneTextbox: this.setPhoneTextboxControl
+  });
 
   constructor() {
-    this.formTestGroup = this.fb.group({
-      phone: ['', [Validators.required]],
-      setPhoneTextbox: ['']
+    effect(() => {
+      this.formState.update((state) => ({
+        ...state,
+        phone: this.phoneValueSignal() ?? ''
+      }));
+    });
+
+    effect(() => {
+      this.formState.update((state) => ({
+        ...state,
+        setPhoneTextbox: this.setPhoneValueSignal() ?? ''
+      }));
     });
   }
 
@@ -60,22 +97,26 @@ export class AppComponent {
    */
   getValue(value: string): void {
     this.currentPhoneValue.set(value);
+    this.formState.update((state) => ({ ...state, phone: value }));
   }
 
   /**
    * Submits the form data by setting the submitted phone value to the current phone value from the form group.
    */
   onSubmit(): void {
-    this.submittedPhoneValue.set(this.formTestGroup.value['phone']);
+    if (!this.phoneForm().valid() || this.formTestGroup.invalid) {
+      this.formTestGroup.markAllAsTouched();
+      return;
+    }
+    this.submittedPhoneValue.set(this.formState().phone);
   }
 
   /**
    * Sets the phone control value to the value entered in the 'setPhoneTextbox' control.
    */
   setPhone(): void {
-    this.formTestGroup.controls['phone'].setValue(
-      this.formTestGroup.value['setPhoneTextbox']
-    );
+    const nextValue = this.formState().setPhoneTextbox;
+    this.formTestGroup.controls.phone.setValue(nextValue);
   }
 
   /**
@@ -108,5 +149,19 @@ export class AppComponent {
    */
   resetForm(): void {
     this.formTestGroup.reset();
+    this.formState.set({ phone: '', setPhoneTextbox: '' });
+    this.currentPhoneValue.set('');
+    this.currentCountryCode.set('');
+    this.currentCountryISO.set('');
+    this.submittedPhoneValue.set('');
   }
 }
+
+interface DemoFormState {
+  phone: string;
+  setPhoneTextbox: string;
+}
+
+const demoFormSchema = schema<DemoFormState>((f) => {
+  required(f.phone, { message: 'Phone number is required' });
+});

@@ -14,7 +14,11 @@
       [outputNumberFormat]="PhoneNumberFormat.INTERNATIONAL"
       [appearance]="'fill'"
     ></ngx-material-intl-tel-input>
-    <button mat-flat-button type="submit" [disabled]="!formTestGroup.valid">
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="!phoneForm().valid() || formTestGroup.invalid"
+    >
       Submit
     </button>
     <button mat-flat-button (click)="resetForm()" type="button">Reset</button>
