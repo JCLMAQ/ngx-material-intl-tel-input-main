@@ -115,7 +115,7 @@ imports: [NgxMaterialIntlTelInputComponent];
 - `--mat-filled-tel-form-hover-background`: Hover background (`default: #f5f5f5`)
 - `--mat-outline-tel-form-hover-background`: Outline variant hover background (`default: #f5f5f5`)
 
-## 📱 Input Field Customization
+## 📱 Input FormField Customization
 
 ### Appearance
 
