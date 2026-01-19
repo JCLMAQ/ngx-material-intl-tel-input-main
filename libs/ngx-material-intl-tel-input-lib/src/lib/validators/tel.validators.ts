@@ -1,11 +1,38 @@
-import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { WritableSignal } from '@angular/core';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
 import { Country } from '../types/country.model';
 import { isValidPhoneNumberLength } from '../utils/phone-number.utils';
 
+/**
+ * Interface for phone form state using signals
+ */
+export interface PhoneFormState {
+  prefixCtrl: WritableSignal<Country | null>;
+  numberControl: WritableSignal<string>;
+}
+
+/**
+ * Validation error types for phone number validation
+ */
+export interface PhoneValidationError {
+  kind: 'invalidNumber' | 'numberTooLong';
+  message: string;
+}
+
 export default class TelValidators {
+  /**
+   * Validates phone number format and length using google-libphonenumber.
+   * Compatible with both traditional ValidatorFn and Signal Forms.
+   *
+   * @param telFormState - Signal-based form state containing prefix and number controls
+   * @param includeDialCode - Whether to include the dial code in validation
+   * @param allCountries - List of all available countries
+   * @param outputNumberFormat - Format for the phone number output
+   * @returns ValidatorFn for use with Angular forms
+   */
   static isValidNumber(
-    telForm: FormGroup,
+    telFormState: PhoneFormState,
     includeDialCode = false,
     allCountries: Country[],
     outputNumberFormat: PhoneNumberFormat = PhoneNumberFormat.INTERNATIONAL
@@ -25,8 +52,7 @@ export default class TelValidators {
 
         const setPrefixControlValue = (
           countryCode: string | number | undefined,
-          allCountries: Country[],
-          telForm: FormGroup
+          allCountries: Country[]
         ) => {
           const country = allCountries.find((c) => {
             if (c.dialCode === countryCode?.toString()) {
@@ -47,62 +73,67 @@ export default class TelValidators {
             }
             return undefined;
           });
-          if (country && country.iso2 !== telForm?.value?.prefixCtrl?.iso2) {
-            telForm.get('prefixCtrl')?.setValue(country, { emitEvent: false });
+
+          if (country && country.iso2 !== telFormState.prefixCtrl()?.iso2) {
+            telFormState.prefixCtrl.set(country);
           }
         };
+
         if (includeDialCode) {
           const countryDialCode =
-            telForm?.value?.prefixCtrl?.dialCode || parsed.getCountryCode();
+            telFormState.prefixCtrl()?.dialCode || parsed.getCountryCode();
           if (countryDialCode) {
-            setPrefixControlValue(countryDialCode, allCountries, telForm);
+            setPrefixControlValue(countryDialCode, allCountries);
           }
         }
 
         const formattedOnlyNumber = phoneNumberUtil.format(
           parsed,
-          includeDialCode || telForm?.value?.prefixCtrl?.iso2 === 'mp'
+          includeDialCode || telFormState.prefixCtrl()?.iso2 === 'mp'
             ? outputNumberFormat
             : PhoneNumberFormat.NATIONAL
         );
-        telForm
-          .get('numberControl')
-          ?.setValue(formattedOnlyNumber, { emitEvent: false });
+
+        telFormState.numberControl.set(formattedOnlyNumber);
 
         const isValidNumber = phoneNumberUtil.isValidNumber(parsed);
-        setPrefixControlValue(parsed.getCountryCode(), allCountries, telForm);
+        setPrefixControlValue(parsed.getCountryCode(), allCountries);
 
         // Check if the phone number length is valid for the country
-        const countryIso = telForm?.value?.prefixCtrl?.iso2;
+        const countryIso = telFormState.prefixCtrl()?.iso2;
         const isValidLength = countryIso
           ? isValidPhoneNumberLength(control.value, countryIso)
           : true;
 
         if (!isValidNumber) {
-          control.setErrors({ invalidNumber: true });
-          telForm.get('numberControl')?.setErrors({ invalidNumber: true });
-          return {
-            invalidNumber: true
-          };
+          return { invalidNumber: true };
         } else if (!isValidLength) {
           // If the number is valid according to libphonenumber but exceeds the maximum length
-          control.setErrors({ numberTooLong: true });
-          telForm.get('numberControl')?.setErrors({ numberTooLong: true });
-          return {
-            numberTooLong: true
-          };
+          return { numberTooLong: true };
         } else {
-          control.setErrors(null);
-          telForm.get('numberControl')?.setErrors(null);
           return null;
         }
       } catch {
-        control.setErrors({ invalidNumber: true });
-        telForm.get('numberControl')?.setErrors({ invalidNumber: true });
-        return {
-          invalidNumber: true
-        };
+        return { invalidNumber: true };
       }
     };
+  }
+
+  /**
+   * Creates a validation error message for phone number validation
+   * @param error - The validation error object
+   * @returns Human-readable error message
+   */
+  static getErrorMessage(error: { [key: string]: boolean } | null): string | null {
+    if (!error) return null;
+
+    if (error['invalidNumber']) {
+      return 'Invalid phone number format';
+    }
+    if (error['numberTooLong']) {
+      return 'Phone number is too long';
+    }
+
+    return 'Invalid phone number';
   }
 }
