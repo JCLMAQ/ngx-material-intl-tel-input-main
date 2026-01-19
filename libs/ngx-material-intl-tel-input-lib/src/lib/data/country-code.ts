@@ -32,7 +32,7 @@ export class CountryCode {
     ['🇧🇩', 'Bangladesh (বাংলাদেশ)', CountryISO.Bangladesh, '880'],
     ['🇧🇧', 'Barbados', 'bb', '1', 1, ['246']],
     ['🇧🇾', 'Belarus (Беларусь)', CountryISO.Belarus, '375'],
-    ['🇧🇪', 'Belgium (België)', CountryISO.Belgium, '32'],
+    ['🇧🇪', 'Belgium (Belgique/België)', CountryISO.Belgium, '32'],
     ['🇧🇿', 'Belize', CountryISO.Belize, '501'],
     ['🇧🇯', 'Benin (Bénin)', CountryISO.Benin, '229'],
     ['🇧🇲', 'Bermuda', 'bm', '1', 1, ['441']],
