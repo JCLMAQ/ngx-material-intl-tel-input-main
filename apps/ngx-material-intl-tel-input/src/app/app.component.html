@@ -1,10 +1,10 @@
 <section>
-  <form [formGroup]="reactiveFormGroup" (ngSubmit)="onSubmit($event)">
+  <form (ngSubmit)="onSubmit($event)">
     <ngx-material-intl-tel-input
       (currentValue)="getValue($event)"
       (currentCountryCode)="getCountryCode($event)"
       (currentCountryISO)="getCountryISO($event)"
-      [fieldControl]="phoneControl"
+      [initialValue]="phoneValue()"
       [emojiFlags]="false"
       [includeDialCode]="false"
       [useMask]="false"
@@ -17,7 +17,7 @@
     <button
       mat-flat-button
       type="submit"
-      [disabled]="!formTestGroup().valid()"
+      [disabled]="!isFormValid()"
     >
       Submit
     </button>
@@ -32,7 +32,8 @@
         <input
           matInput
           type="text"
-          [formField]="formTestGroup.setPhoneTextbox"
+          [ngModel]="setPhoneInputValue()"
+          (ngModelChange)="updateSetPhoneInput($event)"
         />
       </mat-form-field>
       <button mat-flat-button (click)="setPhone()" type="button">

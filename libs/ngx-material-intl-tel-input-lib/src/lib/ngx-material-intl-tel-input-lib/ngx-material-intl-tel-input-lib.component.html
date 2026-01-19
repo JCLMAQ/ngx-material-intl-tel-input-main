@@ -6,20 +6,21 @@
   }
   <div
     class="tel-form"
-    [formGroup]="telForm"
     [ngClass]="{ 'is-focused': isFocused() && appearance() !== 'outline' }"
   >
     <mat-form-field
       [appearance]="appearance()"
       class="prefix-form-field"
-      matTooltip="{{ prefixCtrl.value?.name }}"
+      matTooltip="{{ selectedPrefix()?.name }}"
     >
       <mat-select
-        formControlName="prefixCtrl"
+        [ngModel]="selectedPrefix()"
+        (ngModelChange)="onPrefixChange($event)"
         [placeholder]="(!isLoading() && textLabels().codePlaceholder) || ''"
         #singleSelect
         panelClass="tel-mat-select-panel"
         [required]="required()"
+        [disabled]="disabled()"
       >
         <mat-select-trigger>
           <div class="country-option">
@@ -27,20 +28,20 @@
               @if (emojiFlags()) {
                 <div>
                   <span class="flag-emoji">{{
-                    prefixCtrl.value?.emojiFlag
+                    selectedPrefix()?.emojiFlag
                   }}</span>
                 </div>
               } @else {
                 <div
                   class="country-option-flag"
-                  [ngClass]="prefixCtrl.value?.flagClass"
+                  [ngClass]="selectedPrefix()?.flagClass"
                 ></div>
               }
             </div>
-            @if (includeDialCode() || prefixCtrl.value?.iso2 === 'mp') {
-              <div>{{ prefixCtrl.value?.iso2?.toUpperCase() || '' }}</div>
+            @if (includeDialCode() || selectedPrefix()?.iso2 === 'mp') {
+              <div>{{ selectedPrefix()?.iso2?.toUpperCase() || '' }}</div>
             } @else {
-              <div>+{{ prefixCtrl.value?.dialCode || '' }}</div>
+              <div>+{{ selectedPrefix()?.dialCode || '' }}</div>
             }
           </div>
         </mat-select-trigger>
@@ -48,7 +49,8 @@
         @if (enableSearch()) {
           <mat-option>
             <ngx-mat-select-search
-              [formControl]="prefixFilterCtrl"
+              [ngModel]="searchFilter()"
+              (ngModelChange)="onSearchChange($event)"
               [placeholderLabel]="textLabels().searchPlaceholderLabel || ''"
               [noEntriesFoundLabel]="textLabels().noEntriesFoundLabel || ''"
             >
@@ -73,7 +75,7 @@
           </mat-option>
         }
 
-        @for (country of filteredCountries | async; track $index) {
+        @for (country of filteredCountries(); track country.iso2) {
           <mat-option [value]="country">
             <div
               class="country-option"
@@ -105,27 +107,29 @@
       <input
         matInput
         type="tel"
-        formControlName="numberControl"
-        [placeholder]="prefixCtrl.value?.placeHolder || ''"
+        [ngModel]="phoneNumber()"
+        (ngModelChange)="onNumberChange($event)"
+        [placeholder]="selectedPrefix()?.placeHolder || ''"
         autocomplete="off"
         (focus)="onInputFocus()"
         (blur)="onInputBlur()"
         [required]="required()"
+        [disabled]="disabled()"
         [attr.maxlength]="
           enableInputMaxLength()
-            ? getMaxInputLength(prefixCtrl.value?.iso2)
+            ? getMaxInputLength(selectedPrefix()?.iso2)
             : null
         "
         #numberInput
-        [imask]="prefixCtrl.value?.mask"
+        [imask]="selectedPrefix()?.mask"
       />
 
       @if (!hidePhoneIcon()) {
         <mat-icon matSuffix>
           @if (
-            iconMakeCall() && fieldControl()?.valid && fieldControl()?.value
+            iconMakeCall() && !validationError() && formattedPhoneNumber()
           ) {
-            <a href="tel:{{ fieldControl()?.value }}">
+            <a href="tel:{{ formattedPhoneNumber() }}">
               <ngx-material-intl-tel-input-phone-icon></ngx-material-intl-tel-input-phone-icon>
             </a>
           } @else {
@@ -140,20 +144,15 @@
     <mat-hint>{{ textLabels().hintLabel }}</mat-hint>
   }
   @if (
-    fieldControl()?.hasError('required') &&
-    textLabels().requiredError &&
-    fieldControl()?.dirty
+    required() &&
+    !phoneNumber() &&
+    textLabels().requiredError
   ) {
     <mat-error>{{ textLabels().requiredError }}</mat-error>
   }
   @if (
-    fieldControl()?.hasError('invalidNumber') && textLabels().invalidNumberError
+    validationError()?.['invalidPhoneNumber'] && textLabels().invalidNumberError
   ) {
     <mat-error>{{ textLabels().invalidNumberError }}</mat-error>
-  }
-  @if (
-    fieldControl()?.hasError('numberTooLong') && textLabels().numberTooLongError
-  ) {
-    <mat-error>{{ textLabels().numberTooLongError }}</mat-error>
   }
 </section>

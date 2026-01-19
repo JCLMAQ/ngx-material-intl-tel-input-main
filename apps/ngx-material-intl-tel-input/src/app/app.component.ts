@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FormField } from '@angular/forms/signals';
-import { compatForm } from '@angular/forms/signals/compat';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -11,17 +9,11 @@ import { RouterOutlet } from '@angular/router';
 import { PhoneNumberFormat } from 'google-libphonenumber';
 import { NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
 
-interface DemoFormValue {
-  phone: string;
-  setPhoneTextbox: string;
-}
-
 @Component({
   imports: [
     NgxMaterialIntlTelInputComponent,
     RouterOutlet,
-    FormField,
-    ReactiveFormsModule,
+    FormsModule,
     MatButtonModule,
     MatChipsModule,
     MatFormFieldModule,
@@ -34,30 +26,22 @@ interface DemoFormValue {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
-  readonly phoneControl = new FormControl('', { nonNullable: true });
-  readonly setPhoneControl = new FormControl('', { nonNullable: true });
-
-  readonly reactiveFormGroup = new FormGroup({
-    phone: this.phoneControl,
-    setPhoneTextbox: this.setPhoneControl
-  });
-
-  private readonly formValue = signal({
-    phone: this.phoneControl,
-    setPhoneTextbox: this.setPhoneControl
-  });
-
-  readonly formTestGroup = compatForm(this.formValue);
-
-  title = 'ngx-material-intl-tel-input';
+  // Signals pour l'état du formulaire
+  phoneValue = signal<string>('');
+  setPhoneInputValue = signal<string>('');
   currentPhoneValue = signal<string>('');
   currentCountryCode = signal<string>('');
   currentCountryISO = signal<string>('');
   submittedPhoneValue = signal<string>('');
   showSetPhoneInput = signal<boolean>(false);
+
   PhoneNumberFormat = PhoneNumberFormat;
 
-  constructor() {}
+  // Computed pour la validation du formulaire
+  isFormValid = computed(() => {
+    const phone = this.currentPhoneValue();
+    return phone && phone.length > 0;
+  });
 
   getValue(value: string): void {
     this.currentPhoneValue.set(value);
@@ -65,15 +49,19 @@ export class AppComponent {
 
   onSubmit(event: Event): void {
     event.preventDefault();
-    if (!this.formTestGroup().valid()) {
+    if (!this.isFormValid()) {
       return;
     }
-    this.submittedPhoneValue.set(this.formTestGroup.phone().value());
+    this.submittedPhoneValue.set(this.currentPhoneValue());
   }
 
   setPhone(): void {
-    const newPhone = this.formTestGroup.setPhoneTextbox().value();
-    this.phoneControl.setValue(newPhone);
+    const newPhone = this.setPhoneInputValue();
+    this.phoneValue.set(newPhone);
+  }
+
+  updateSetPhoneInput(value: string): void {
+    this.setPhoneInputValue.set(value);
   }
 
   toggleShowSetPhoneInput(): void {
@@ -81,8 +69,11 @@ export class AppComponent {
   }
 
   resetForm(): void {
-    this.phoneControl.reset();
-    this.setPhoneControl.reset();
+    this.phoneValue.set('');
+    this.setPhoneInputValue.set('');
+    this.currentPhoneValue.set('');
+    this.currentCountryCode.set('');
+    this.currentCountryISO.set('');
   }
 
   getCountryCode(value: string): void {
