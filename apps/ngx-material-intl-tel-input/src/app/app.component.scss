@@ -11,6 +11,26 @@
     gap: 8px;
     justify-content: center;
     align-items: center;
+
+    h2 {
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .language-controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: #f5f5f5;
+      border-radius: 8px;
+
+      mat-form-field {
+        min-width: 200px;
+      }
+    }
+
     form {
       display: flex;
       flex-direction: column;

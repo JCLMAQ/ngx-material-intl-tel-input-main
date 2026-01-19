@@ -1,0 +1,13 @@
+{
+  "NGX_MAT_INTL_TEL_INPUT": {
+    "MAIN_LABEL": "Numéro de téléphone",
+    "CODE_PLACEHOLDER": "Code",
+    "SEARCH_PLACEHOLDER": "Rechercher",
+    "NO_ENTRIES_FOUND": "Aucun pays trouvé",
+    "NATIONAL_NUMBER_LABEL": "Numéro",
+    "HINT_LABEL": "Sélectionnez un pays et saisissez votre numéro de téléphone",
+    "INVALID_NUMBER_ERROR": "Le numéro n'est pas valide",
+    "REQUIRED_ERROR": "Ce champ est requis",
+    "NUMBER_TOO_LONG_ERROR": "Le numéro de téléphone est trop long"
+  }
+}

@@ -1,10 +1,35 @@
 <section>
+  <h2>ngx-material-intl-tel-input Demo</h2>
+
+  <!-- Language selector -->
+  <div class="language-controls">
+    <mat-form-field appearance="fill">
+      <mat-label>Language</mat-label>
+      <mat-select
+        [ngModel]="selectedLanguage()"
+        (ngModelChange)="switchLanguage($event)"
+      >
+        @for (lang of availableLanguages; track lang.code) {
+          <mat-option [value]="lang.code">{{ lang.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox
+      [ngModel]="enableI18n()"
+      (ngModelChange)="toggleI18n()"
+    >
+      Enable i18n
+    </mat-checkbox>
+  </div>
+
   <form (ngSubmit)="onSubmit($event)">
     <ngx-material-intl-tel-input
       (currentValue)="getValue($event)"
       (currentCountryCode)="getCountryCode($event)"
       (currentCountryISO)="getCountryISO($event)"
       [initialValue]="phoneValue()"
+      [enableI18n]="enableI18n()"
       [emojiFlags]="false"
       [includeDialCode]="false"
       [useMask]="false"

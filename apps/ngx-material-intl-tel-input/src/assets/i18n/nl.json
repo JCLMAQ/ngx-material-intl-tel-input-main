@@ -1,0 +1,13 @@
+{
+  "NGX_MAT_INTL_TEL_INPUT": {
+    "MAIN_LABEL": "Telefoonnummer",
+    "CODE_PLACEHOLDER": "Code",
+    "SEARCH_PLACEHOLDER": "Zoeken",
+    "NO_ENTRIES_FOUND": "Geen landen gevonden",
+    "NATIONAL_NUMBER_LABEL": "Nummer",
+    "HINT_LABEL": "Selecteer land en voer uw telefoonnummer in",
+    "INVALID_NUMBER_ERROR": "Nummer is ongeldig",
+    "REQUIRED_ERROR": "Dit veld is verplicht",
+    "NUMBER_TOO_LONG_ERROR": "Telefoonnummer is te lang"
+  }
+}

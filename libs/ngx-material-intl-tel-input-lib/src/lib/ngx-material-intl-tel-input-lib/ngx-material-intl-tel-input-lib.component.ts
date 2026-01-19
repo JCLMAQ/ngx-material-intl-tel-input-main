@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   OnInit,
   computed,
@@ -14,6 +15,7 @@ import {
   signal,
   viewChild
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
   MatFormFieldAppearance
@@ -25,6 +27,7 @@ import {
   MatSelectModule
 } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { IMaskModule } from 'angular-imask';
 import {
   PhoneNumber,
@@ -62,7 +65,8 @@ interface TelFormState {
     MatInputModule,
     MatTooltipModule,
     PhoneIconComponent,
-    IMaskModule
+    IMaskModule,
+    TranslateModule
   ],
   providers: [
     CountryCode,
@@ -81,6 +85,8 @@ export class NgxMaterialIntlTelInputComponent
   private readonly countryCodeData = inject(CountryCode);
   private readonly geoIpService = inject(GeoIpService);
   private readonly countryDataService = inject(CountryDataService);
+  private readonly translate = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // ViewChild references
   singleSelect = viewChild<MatSelect>('singleSelect');
@@ -164,6 +170,33 @@ export class NgxMaterialIntlTelInputComponent
     }
   });
 
+  // Computed signals pour les labels traduits
+  protected readonly translatedLabels = computed(() => {
+    // Forcer la réévaluation quand la langue change
+    this.translationUpdate();
+
+    if (!this.enableI18n()) {
+      return this.textLabels();
+    }
+
+    const getTranslation = (key: string, fallback?: string) => {
+      const translation = this.translate.instant(key);
+      return translation !== key ? translation : (fallback || '');
+    };
+
+    return {
+      mainLabel: getTranslation('NGX_MAT_INTL_TEL_INPUT.MAIN_LABEL', this.textLabels().mainLabel),
+      codePlaceholder: getTranslation('NGX_MAT_INTL_TEL_INPUT.CODE_PLACEHOLDER', this.textLabels().codePlaceholder),
+      searchPlaceholderLabel: getTranslation('NGX_MAT_INTL_TEL_INPUT.SEARCH_PLACEHOLDER', this.textLabels().searchPlaceholderLabel),
+      noEntriesFoundLabel: getTranslation('NGX_MAT_INTL_TEL_INPUT.NO_ENTRIES_FOUND', this.textLabels().noEntriesFoundLabel),
+      nationalNumberLabel: getTranslation('NGX_MAT_INTL_TEL_INPUT.NATIONAL_NUMBER_LABEL', this.textLabels().nationalNumberLabel),
+      hintLabel: getTranslation('NGX_MAT_INTL_TEL_INPUT.HINT_LABEL', this.textLabels().hintLabel),
+      invalidNumberError: getTranslation('NGX_MAT_INTL_TEL_INPUT.INVALID_NUMBER_ERROR', this.textLabels().invalidNumberError),
+      requiredError: getTranslation('NGX_MAT_INTL_TEL_INPUT.REQUIRED_ERROR', this.textLabels().requiredError),
+      numberTooLongError: getTranslation('NGX_MAT_INTL_TEL_INPUT.NUMBER_TOO_LONG_ERROR', this.textLabels().numberTooLongError)
+    };
+  });
+
   // Propriétés publiques
   allCountries: Country[] = [];
   phoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -187,6 +220,7 @@ export class NgxMaterialIntlTelInputComponent
   preferredCountries = input<(CountryISO | string)[]>([]);
   visibleCountries = input<(CountryISO | string)[]>([]);
   excludedCountries = input<(CountryISO | string)[]>([]);
+  enableI18n = input<boolean>(false);
   textLabels = input<TextLabels>({
     mainLabel: 'Phone number',
     codePlaceholder: 'Code',
@@ -218,7 +252,22 @@ export class NgxMaterialIntlTelInputComponent
   isFocused = signal<boolean>(false);
   isLoading = signal<boolean>(true);
 
+  // Signal pour forcer la mise à jour des traductions
+  private readonly translationUpdate = signal<number>(0);
+
   constructor() {
+    // Effect pour mettre à jour les traductions quand la langue change
+    effect(() => {
+      if (this.enableI18n()) {
+        // S'abonner aux changements de langue avec nettoyage automatique
+        this.translate.onLangChange
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => {
+            this.translationUpdate.update(v => v + 1);
+          });
+      }
+    });
+
     // Effect pour propager les changements du numéro formaté
     effect(() => {
       const formatted = this.formattedPhoneNumber();

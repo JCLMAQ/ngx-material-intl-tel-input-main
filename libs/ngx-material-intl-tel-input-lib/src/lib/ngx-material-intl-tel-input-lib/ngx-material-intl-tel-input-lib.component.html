@@ -1,7 +1,7 @@
 <section>
-  @if (mainLabel() || textLabels().mainLabel) {
+  @if (mainLabel() || translatedLabels().mainLabel) {
     <mat-label class="main-label">{{
-      mainLabel() || textLabels().mainLabel
+      mainLabel() || translatedLabels().mainLabel
     }}</mat-label>
   }
   <div
@@ -16,7 +16,7 @@
       <mat-select
         [ngModel]="selectedPrefix()"
         (ngModelChange)="onPrefixChange($event)"
-        [placeholder]="(!isLoading() && textLabels().codePlaceholder) || ''"
+        [placeholder]="(!isLoading() && translatedLabels().codePlaceholder) || ''"
         #singleSelect
         panelClass="tel-mat-select-panel"
         [required]="required()"
@@ -51,8 +51,8 @@
             <ngx-mat-select-search
               [ngModel]="searchFilter()"
               (ngModelChange)="onSearchChange($event)"
-              [placeholderLabel]="textLabels().searchPlaceholderLabel || ''"
-              [noEntriesFoundLabel]="textLabels().noEntriesFoundLabel || ''"
+              [placeholderLabel]="translatedLabels().searchPlaceholderLabel || ''"
+              [noEntriesFoundLabel]="translatedLabels().noEntriesFoundLabel || ''"
             >
               <svg
                 ngxMatSelectSearchClear
@@ -101,8 +101,8 @@
     </mat-form-field>
 
     <mat-form-field [appearance]="appearance()" class="number-form-field">
-      @if (textLabels().nationalNumberLabel) {
-        <mat-label>{{ textLabels().nationalNumberLabel }}</mat-label>
+      @if (translatedLabels().nationalNumberLabel) {
+        <mat-label>{{ translatedLabels().nationalNumberLabel }}</mat-label>
       }
       <input
         matInput
@@ -140,19 +140,19 @@
     </mat-form-field>
   </div>
 
-  @if (textLabels().hintLabel) {
-    <mat-hint>{{ textLabels().hintLabel }}</mat-hint>
+  @if (translatedLabels().hintLabel) {
+    <mat-hint>{{ translatedLabels().hintLabel }}</mat-hint>
   }
   @if (
     required() &&
     !phoneNumber() &&
-    textLabels().requiredError
+    translatedLabels().requiredError
   ) {
-    <mat-error>{{ textLabels().requiredError }}</mat-error>
+    <mat-error>{{ translatedLabels().requiredError }}</mat-error>
   }
   @if (
-    validationError()?.['invalidPhoneNumber'] && textLabels().invalidNumberError
+    validationError()?.['invalidPhoneNumber'] && translatedLabels().invalidNumberError
   ) {
-    <mat-error>{{ textLabels().invalidNumberError }}</mat-error>
+    <mat-error>{{ translatedLabels().invalidNumberError }}</mat-error>
   }
 </section>
