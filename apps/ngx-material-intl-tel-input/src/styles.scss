@@ -18,12 +18,45 @@
     --mat-option-selected-state-label-text-color: #209ffc;
     --mat-select-focused-arrow-color: #209ffc;
     --mat-form-field-outlined-focus-outline-color: #209ffc;
+
+    // Material Design 3 tokens - Light theme
+    --mat-sys-primary: #0062a0;
+    --mat-sys-on-primary: #ffffff;
+    --mat-sys-surface: #fdfcff;
+    --mat-sys-surface-container: #f1f0f4;
+    --mat-sys-surface-container-low: #fbfbfb;
+    --mat-sys-surface-container-highest: #e2e2e6;
+    --mat-sys-on-surface: #1a1c1e;
+    --mat-sys-on-surface-variant: #45474a;
+    --mat-sys-outline: #76777a;
+    --mat-sys-outline-variant: #c6c6ca;
+    --mat-sys-error: #ba1a1a;
+    --mat-sys-corner-small: 8px;
+    --mat-sys-corner-extra-small: 4px;
   }
 }
 
 // Dark mode via class
 body.dark-theme {
   @include mat.all-component-colors(m3-theme.$dark-theme);
+
+  // Material Design 3 tokens - Dark theme
+  --mat-sys-primary: #9ccaff;
+  --mat-sys-on-primary: #003256;
+  --mat-sys-surface: #1a1c1e;
+  --mat-sys-surface-container: #2f3033;
+  --mat-sys-surface-container-low: #1e2022;
+  --mat-sys-surface-container-highest: #3a3b3e;
+  --mat-sys-on-surface: #e2e2e6;
+  --mat-sys-on-surface-variant: #c6c6ca;
+  --mat-sys-outline: #909094;
+  --mat-sys-outline-variant: #45474a;
+  --mat-sys-error: #ffb4ab;
+  --mat-sys-corner-small: 8px;
+  --mat-sys-corner-extra-small: 4px;
+
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
 }
 
 html,

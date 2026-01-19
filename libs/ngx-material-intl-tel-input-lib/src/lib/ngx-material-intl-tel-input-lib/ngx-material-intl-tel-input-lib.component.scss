@@ -1,7 +1,13 @@
+@use '@angular/material' as mat;
+
 :host {
   box-sizing: border-box;
   display: block;
   width: 100%;
+
+  // Hériter les couleurs du thème parent
+  color: var(--mat-sys-on-surface);
+
   section {
     display: flex;
     flex-direction: column;
@@ -10,54 +16,52 @@
     .main-label {
       padding: 2px 0;
       font-size: 14px;
+      color: var(--mat-sys-on-surface);
     }
 
     .tel-form:has(.mat-form-field-appearance-fill) {
       border-style: solid;
       border-width: var(--mat-filled-tel-form-outline-width, 1px);
-      border-color: var(--mat-filled-tel-form-outline-color, var(--mat-sys-outline, rgba(0, 0, 0, 0.12)));
-      border-radius: var(--mat-filled-tel-form-container-shape, var(--mat-sys-corner-small, 8px));
+      border-color: var(--mat-filled-tel-form-outline-color, var(--mat-sys-outline));
+      border-radius: var(--mat-filled-tel-form-container-shape, var(--mat-sys-corner-small));
       background-color: var(
         --mat-filled-tel-form-background,
-        var(--mat-sys-surface-container-low, #fbfbfb)
+        var(--mat-sys-surface-container-low)
       ) !important;
 
       &.is-focused {
         border-color: var(
           --mat-filled-tel-form-focus-outline-color,
-          var(--mat-sys-primary, rgb(32, 159, 252))
+          var(--mat-sys-primary)
         );
         outline: 2px solid
           var(
             --mat-filled-tel-form-focus-outline-color,
-            rgba(var(--mat-theme-primary-rgb, 32, 159, 252), 0.3)
+            var(--mat-sys-primary)
           );
         background-color: var(
           --mat-filled-tel-form-focus-background,
-          var(--mat-sys-surface, #fff)
+          var(--mat-sys-surface)
         ) !important;
       }
       &:hover {
         background-color: var(
           --mat-filled-tel-form-hover-background,
-          var(--mat-sys-surface-container-highest, #f5f5f5)
+          var(--mat-sys-surface-container-highest)
         ) !important;
       }
       &.ng-invalid.ng-dirty:not(.is-focused) {
-        border: 1px solid var(--mat-sys-error, var(--mat-theme-error, #f44336));
+        border: 1px solid var(--mat-sys-error);
       }
     }
 
     .tel-form:has(.mat-form-field-appearance-outline) {
       border: none;
-      background-color: var(
-        --mat-outline-tel-form-background,
-        var(--mat-sys-surface, transparent)
-      ) !important;
+      background-color: transparent !important;
       &:hover {
         background-color: var(
           --mat-outline-tel-form-hover-background,
-          var(--mat-sys-surface-container-highest, rgba(0, 0, 0, 0.04))
+          var(--mat-sys-surface-container-highest)
         ) !important;
       }
       mat-form-field {
@@ -158,19 +162,19 @@
           width: 100%;
           input {
             &::placeholder {
-              color: var(--mat-tel-form-placeholder-color, var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.38)));
+              color: var(--mat-tel-form-placeholder-color, var(--mat-sys-on-surface-variant));
             }
           }
           mat-icon {
             padding: 0 8px;
             svg {
-              color: var(--mat-tel-form-icon-color, var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6)));
+              color: var(--mat-tel-form-icon-color, var(--mat-sys-on-surface-variant));
             }
             a {
               text-decoration: none;
-              color: var(--mat-sys-primary, var(--mat-theme-primary, #209ffc));
+              color: var(--mat-sys-primary);
               svg {
-                color: var(--mat-sys-primary, var(--mat-theme-primary, #209ffc));
+                color: var(--mat-sys-primary);
               }
             }
           }
@@ -200,13 +204,10 @@
       margin: 2px 0;
     }
     mat-hint {
-      color: var(--mat-tel-form-hint-color, var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6)));
+      color: var(--mat-tel-form-hint-color, var(--mat-sys-on-surface-variant));
     }
     mat-error {
-      color: var(
-        --mat-tel-form-error-color,
-        var(--mat-sys-error, var(--mat-theme-error, #f44336))
-      );
+      color: var(--mat-tel-form-error-color, var(--mat-sys-error));
     }
   }
 
@@ -227,9 +228,9 @@
   width: 240px !important;
   .mat-mdc-select-panel {
     box-shadow: none !important;
-    border-radius: var(--mat-sys-corner-small, 8px) !important;
-    border: 1px solid var(--mat-sys-outline-variant, rgba(0, 0, 0, 0.12)) !important;
-    background-color: var(--mat-sys-surface-container, #fff) !important;
+    border-radius: var(--mat-sys-corner-small) !important;
+    border: 1px solid var(--mat-sys-outline-variant) !important;
+    background-color: var(--mat-sys-surface-container) !important;
     margin: 8px 0 !important;
   }
   .mdc-list-item__primary-text {
