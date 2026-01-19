@@ -69,8 +69,7 @@ import {
   max, 
   pattern,
   applyEach,
-  validate,
-  customError
+  validate
 } from '@angular/forms/signals';
 
 // Available validators:
@@ -82,7 +81,6 @@ import {
 // - max(field, value, options?) - Maximum numeric value
 // - pattern(field, regex, options?) - Match a regular expression
 // - applyEach(arrayField, validatorFn) - Validate each array item
-// - customError(options) - Custom validation logic
 ```
 
 ## 1. Basic Form with Schema Validation
@@ -91,7 +89,7 @@ import {
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, email, minLength } from '@angular/forms/signals';
+import { form, schema, Field, required, email, minLength } from '@angular/forms/signals';
 import { JsonPipe } from '@angular/common';
 
 // Define TypeScript interface
@@ -110,7 +108,7 @@ const userSchema = schema<User>((f) => {
 
 @Component({
   selector: 'app-user-form',
-  imports: [FormField, JsonPipe],
+  imports: [Field, JsonPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -157,11 +155,11 @@ export class UserFormComponent {
 
 ## 2. Custom Validation Logic
 
-For custom validation beyond built-in validators, use `validate()` and `customError()`:
+For custom validation beyond built-in validators, use `validate()``:
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, validate, customError } from '@angular/forms/signals';
+import { form, schema, Field, required, validate} from '@angular/forms/signals';
 
 interface User {
   username: string;
@@ -175,10 +173,10 @@ const userSchema = schema<User>((f) => {
   validate(f.username, (field) => {
     const value = field.value();
     if (value && !/^[a-zA-Z]/.test(value)) {
-      return customError({
+      return {
         kind: 'pattern',
         message: 'Username must start with a letter'
-      });
+      };
     }
     return null;
   });
@@ -187,16 +185,16 @@ const userSchema = schema<User>((f) => {
   validate(f.age, (field) => {
     const value = field.value();
     if (value < 18) {
-      return customError({
+      return {
         kind: 'min',
         message: 'Must be at least 18 years old'
-      });
+      };
     }
     if (value > 120) {
-      return customError({
+      return {
         kind: 'max',
         message: 'Age must be 120 or less'
-      });
+      };
     }
     return null;
   });
@@ -204,7 +202,7 @@ const userSchema = schema<User>((f) => {
 
 @Component({
   selector: 'app-custom-validation-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -242,7 +240,7 @@ export class CustomValidationFormComponent {
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, email, min, max, pattern } from '@angular/forms/signals';
+import { form, schema, Field, required, email, min, max, pattern } from '@angular/forms/signals';
 
 interface Address {
   street: string;
@@ -275,7 +273,7 @@ const userSchema = schema<User>((f) => {
 
 @Component({
   selector: 'app-nested-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -328,7 +326,7 @@ export class NestedFormComponent {
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, email, applyEach, min } from '@angular/forms/signals';
+import { form, schema, Field, required, email, applyEach, min } from '@angular/forms/signals';
 
 interface Hobby {
   name: string;
@@ -357,7 +355,7 @@ const userSchema = schema<User>((f) => {
 
 @Component({
   selector: 'app-array-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -422,7 +420,7 @@ export class ArrayFormComponent {
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, email, minLength, validate, customError } from '@angular/forms/signals';
+import { form, schema, Field, required, email, minLength, validate } from '@angular/forms/signals';
 
 interface SignupForm {
   name: string;
@@ -445,10 +443,10 @@ const signupSchema = schema<SignupForm>((f) => {
     const confirmPassword = field.value();
     
     if (confirmPassword && password !== confirmPassword) {
-      return customError({
+      return {
         kind: 'passwordMismatch',
         message: 'Passwords do not match'
-      });
+      };
     }
     return null;
   });
@@ -456,7 +454,7 @@ const signupSchema = schema<SignupForm>((f) => {
 
 @Component({
   selector: 'app-signup-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -497,7 +495,7 @@ export class SignupFormComponent {
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, email, minLength, validate, customError } from '@angular/forms/signals';
+import { form, schema, Field, required, email, minLength, validate } from '@angular/forms/signals';
 import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -509,7 +507,7 @@ interface UserForm {
 
 @Component({
   selector: 'app-async-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -580,7 +578,7 @@ export class AsyncFormComponent {
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, minLength, applyEach, validate, customError } from '@angular/forms/signals';
+import { form, schema, Field, required, minLength, applyEach, validate } from '@angular/forms/signals';
 
 type Priority = 'Low' | 'Medium' | 'High';
 type Status = 'Not Started' | 'In Progress' | 'Completed';
@@ -616,10 +614,10 @@ const userProjectsSchema = schema<UserProjects>((f) => {
     validate(project.deadline, (field) => {
       const deadline = new Date(field.value());
       if (deadline <= new Date()) {
-        return customError({
+        return {
           kind: 'futureDate',
           message: 'Deadline must be in the future'
-        });
+        };
       }
       return null;
     });
@@ -633,10 +631,10 @@ const userProjectsSchema = schema<UserProjects>((f) => {
       validate(task.dueDate, (field) => {
         const dueDate = new Date(field.value());
         if (dueDate <= new Date()) {
-          return customError({
+          return {
             kind: 'futureDate',
             message: 'Due date must be in the future'
-          });
+          };
         }
         return null;
       });
@@ -646,7 +644,7 @@ const userProjectsSchema = schema<UserProjects>((f) => {
 
 @Component({
   selector: 'app-projects-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -806,38 +804,38 @@ export const userValidation = schema<User>((f) => {
 ```typescript
 // src/app/shared/util/validators.ts
 
-import { FieldPath, validate, customError } from '@angular/forms/signals';
+import { FieldPath, validate } from '@angular/forms/signals';
 
 export function passwordValidator<T>(field: FieldPath<T>) {
   validate(field, (f) => {
     const value = f.value() as string;
     
     if (!value || value.length < 8) {
-      return customError({
+      return {
         kind: 'minLength',
         message: 'Password must be at least 8 characters'
-      });
+      };
     }
     
     if (!/[A-Z]/.test(value)) {
-      return customError({
+      return {
         kind: 'pattern',
         message: 'Password must contain at least one uppercase letter'
-      });
+      };
     }
     
     if (!/[a-z]/.test(value)) {
-      return customError({
+      return {
         kind: 'pattern',
         message: 'Password must contain at least one lowercase letter'
-      });
+      };
     }
     
     if (!/[0-9]/.test(value)) {
-      return customError({
+      return {
         kind: 'pattern',
         message: 'Password must contain at least one number'
-      });
+      };
     }
     
     return null;
@@ -848,10 +846,10 @@ export function phoneValidator<T>(field: FieldPath<T>) {
   validate(field, (f) => {
     const value = f.value() as string;
     if (value && !/^\+?[1-9]\d{1,14}$/.test(value)) {
-      return customError({
+      return {
         kind: 'pattern',
         message: 'Invalid phone number'
-      });
+      };
     }
     return null;
   });
@@ -861,10 +859,10 @@ export function futureDateValidator<T>(field: FieldPath<T>) {
   validate(field, (f) => {
     const value = f.value() as string;
     if (value && new Date(value) <= new Date()) {
-      return customError({
+      return {
         kind: 'futureDate',
         message: 'Date must be in the future'
-      });
+      };
     }
     return null;
   });
@@ -883,7 +881,7 @@ const signupSchema = schema<SignupForm>((f) => {
 
 ```typescript
 import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { form, schema, FormField, required, email } from '@angular/forms/signals';
+import { form, schema, Field, required, email } from '@angular/forms/signals';
 
 interface User {
   name: string;
@@ -898,7 +896,7 @@ const userSchema = schema<User>((f) => {
 
 @Component({
   selector: 'app-stateful-form',
-  imports: [FormField],
+  imports: [Field],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (ngSubmit)="onSubmit()">
@@ -1015,7 +1013,6 @@ import {
   max, 
   pattern,
   validate,
-  customError,
   applyEach
 } from '@angular/forms/signals';
 
@@ -1042,10 +1039,10 @@ pattern(f.url, /^https?:\/\/.+/, { message: 'Invalid URL' });
 validate(f.username, (field) => {
   const value = field.value();
   if (value && !/^[a-zA-Z]/.test(value)) {
-    return customError({
+    return {
       kind: 'pattern',
       message: 'Username must start with a letter'
-    });
+    };
   }
   return null;
 });
@@ -1062,10 +1059,10 @@ validate(f.phone, (field) => {
   const isRequired = f.parent.requirePhone.value();
 
   if (isRequired && !value) {
-    return customError({
+    return {
       kind: 'required',
       message: 'Phone is required when checkbox is checked'
-    });
+    };
   }
   return null;
 });
@@ -1180,11 +1177,11 @@ const formSchema = schema<DateRange>((f) => {
     const end = new Date(f.endDate.value());
 
     if (start > end) {
-      return customError({
+      return {
         kind: 'dateRange',
         message: 'End date must be after start date',
         field: f.endDate // Attach error to specific field
-      });
+      };
     }
     return null;
   });
@@ -1209,7 +1206,7 @@ const userSchema = schema<User>((f) => {
       this.http.get<{available: boolean}>(`/api/check-username/${username}`),
     errors: (response) =>
       !response.available ?
-        [customError({ kind: 'taken', message: 'Username is already taken' })] :
+        [{ kind: 'taken', message: 'Username is already taken' }] :
         []
   });
 });
@@ -1230,7 +1227,7 @@ const userSchema = schema<User>((f) => {
     url: (value) => `/api/check-email/${value}`,
     method: 'GET',
     errors: (response) => response.exists ?
-      [customError({ kind: 'duplicate', message: 'Email already registered' })] :
+      [{ kind: 'duplicate', message: 'Email already registered' }] :
       []
   });
 });
@@ -1379,7 +1376,7 @@ When migrating from Reactive Forms to Signal Forms:
 
 - Replace `FormControl`/`FormGroup` with `signal()` and `form()`
 - Replace `Validators.*` with schema functions (`required()`, `email()`, etc.)
-- Replace `formControlName` with `[formField]` directive
+- Replace `formControlName` with `[field]` directive
 - Replace `valueChanges` subscriptions with computed signals
 - Replace `patchValue()`/`setValue()` with `signal.set()` or `signal.update()`
 - Replace form validators with schema-based validation
