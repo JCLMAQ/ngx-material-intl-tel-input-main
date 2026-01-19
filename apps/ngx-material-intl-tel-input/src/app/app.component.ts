@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterOutlet } from '@angular/router';
@@ -21,7 +22,8 @@ import { NgxMaterialIntlTelInputComponent } from 'ngx-material-intl-tel-input';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule
   ],
   selector: 'ngx-material-intl-tel-input-root',
   templateUrl: './app.component.html',
@@ -39,6 +41,7 @@ export class AppComponent {
   showSetPhoneInput = signal<boolean>(false);
   enableI18n = signal<boolean>(true);
   selectedLanguage = signal<string>('en');
+  isDarkMode = signal<boolean>(false);
 
   PhoneNumberFormat = PhoneNumberFormat;
 
@@ -61,6 +64,16 @@ export class AppComponent {
     // Définir la langue par défaut
     this.translate.setDefaultLang('en');
     this.translate.use('en');
+
+    // Effet pour gérer le changement de thème
+    effect(() => {
+      const isDark = this.isDarkMode();
+      if (isDark) {
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+      }
+    });
   }
 
   switchLanguage(lang: string): void {
@@ -70,6 +83,10 @@ export class AppComponent {
 
   toggleI18n(): void {
     this.enableI18n.update(v => !v);
+  }
+
+  toggleDarkMode(): void {
+    this.isDarkMode.update(v => !v);
   }
 
   getValue(value: string): void {

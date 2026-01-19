@@ -15,17 +15,17 @@
     .tel-form:has(.mat-form-field-appearance-fill) {
       border-style: solid;
       border-width: var(--mat-filled-tel-form-outline-width, 1px);
-      border-color: var(--mat-filled-tel-form-outline-color, #d8d8d8);
-      border-radius: var(--mat-filled-tel-form-container-shape, 8px);
+      border-color: var(--mat-filled-tel-form-outline-color, var(--mat-sys-outline, rgba(0, 0, 0, 0.12)));
+      border-radius: var(--mat-filled-tel-form-container-shape, var(--mat-sys-corner-small, 8px));
       background-color: var(
         --mat-filled-tel-form-background,
-        #fbfbfb
+        var(--mat-sys-surface-container-low, #fbfbfb)
       ) !important;
 
       &.is-focused {
         border-color: var(
           --mat-filled-tel-form-focus-outline-color,
-          var(--mat-theme-primary, rgb(32, 159, 252))
+          var(--mat-sys-primary, rgb(32, 159, 252))
         );
         outline: 2px solid
           var(
@@ -34,17 +34,17 @@
           );
         background-color: var(
           --mat-filled-tel-form-focus-background,
-          #fff
+          var(--mat-sys-surface, #fff)
         ) !important;
       }
       &:hover {
         background-color: var(
           --mat-filled-tel-form-hover-background,
-          #f5f5f5
+          var(--mat-sys-surface-container-highest, #f5f5f5)
         ) !important;
       }
       &.ng-invalid.ng-dirty:not(.is-focused) {
-        border: 1px solid var(--mat-theme-error, #f44336);
+        border: 1px solid var(--mat-sys-error, var(--mat-theme-error, #f44336));
       }
     }
 
@@ -52,12 +52,12 @@
       border: none;
       background-color: var(
         --mat-outline-tel-form-background,
-        #fbfbfb
+        var(--mat-sys-surface, transparent)
       ) !important;
       &:hover {
         background-color: var(
           --mat-outline-tel-form-hover-background,
-          #f5f5f5
+          var(--mat-sys-surface-container-highest, rgba(0, 0, 0, 0.04))
         ) !important;
       }
       mat-form-field {
@@ -158,19 +158,19 @@
           width: 100%;
           input {
             &::placeholder {
-              color: var(--mat-tel-form-placeholder-color, #ccc);
+              color: var(--mat-tel-form-placeholder-color, var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.38)));
             }
           }
           mat-icon {
             padding: 0 8px;
             svg {
-              color: var(--mat-tel-form-icon-color, #909090);
+              color: var(--mat-tel-form-icon-color, var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6)));
             }
             a {
               text-decoration: none;
-              color: var(--mat-theme-primary, #209ffc);
+              color: var(--mat-sys-primary, var(--mat-theme-primary, #209ffc));
               svg {
-                color: var(--mat-theme-primary, #209ffc);
+                color: var(--mat-sys-primary, var(--mat-theme-primary, #209ffc));
               }
             }
           }
@@ -200,7 +200,7 @@
       margin: 2px 0;
     }
     mat-hint {
-      color: var(--mat-tel-form-hint-color, #b2b2b2);
+      color: var(--mat-tel-form-hint-color, var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6)));
     }
     mat-error {
       color: var(
@@ -227,8 +227,9 @@
   width: 240px !important;
   .mat-mdc-select-panel {
     box-shadow: none !important;
-    border-radius: 8px !important;
-    border: 1px solid #d8d8d8 !important;
+    border-radius: var(--mat-sys-corner-small, 8px) !important;
+    border: 1px solid var(--mat-sys-outline-variant, rgba(0, 0, 0, 0.12)) !important;
+    background-color: var(--mat-sys-surface-container, #fff) !important;
     margin: 8px 0 !important;
   }
   .mdc-list-item__primary-text {

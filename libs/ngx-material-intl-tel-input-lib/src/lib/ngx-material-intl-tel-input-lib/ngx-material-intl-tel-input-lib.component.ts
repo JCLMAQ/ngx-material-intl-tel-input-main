@@ -204,7 +204,7 @@ export class NgxMaterialIntlTelInputComponent
   // Inputs
   required = model<boolean>(false);
   disabled = model<boolean>(false);
-  appearance = input<MatFormFieldAppearance>('fill');
+  appearance = input<MatFormFieldAppearance>('outline');
   enablePlaceholder = input<boolean>(true);
   autoIpLookup = input<boolean>(true);
   autoSelectCountry = input<boolean>(true);
